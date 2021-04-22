@@ -1,41 +1,9 @@
-import { takeEvery, put, all } from "redux-saga/effects";
-import { myFectch } from "../network";
-import { PROJECTS_API, USERS_API } from "../network/api";
-import {
-  setProjectsAction,
-  setUsersAction,
-} from "../pages/project-page/store/actionCreator";
+import { takeEvery, all } from "redux-saga/effects";
 import {
   GETUSERSASYNC,
   SETPROJECTSASYNC,
 } from "../pages/project-page/store/constants";
-import { IUser } from "../types";
-import { IAction } from "../types/redux-types";
-import { IProject } from "../types/index";
-
-function* getUsers() {
-  const res = yield myFectch(USERS_API);
-  yield put(setUsersAction(res as IUser[]));
-}
-
-function* setProjects(action: IAction) {
-  const { personId, name } = action.payload as any;
-  console.log(personId, name);
-  let params: {
-    personId?: number;
-    name?: string;
-  } = {};
-  if (personId >= 0) {
-    params.personId = personId;
-  }
-  if (name) {
-    params.name = name;
-  }
-  //发送网络请求
-  const res = yield myFectch(PROJECTS_API, "GET", params);
-  //更新到redux
-  yield put(setProjectsAction(res as IProject[]));
-}
+import { getUsers, setProjects } from "../pages/project-page/store/saga";
 
 function* saga() {
   //第一个参数是要监听的action的type

@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { IUser } from "../../types/index";
 import { connect } from "react-redux";
+import { useComponentDidMount, useDebounce } from "../../utils/hooks";
 import {
   getUsersActionAsync,
   setProjectsActionAsync,
@@ -16,19 +17,18 @@ const Search = memo(function Seacrh(props: IProps) {
   const [projectName, setProjectName] = useState("");
   const [personId, setPersonId] = useState(-1);
   const { users, getUsers, setProjects } = props;
-  //网络请求获取数据Users数据
-  useEffect(() => {
-    //组件加载完毕，获取users数据并展示
-    getUsers();
-  }, []);
+
+  const deboundProjectName = useDebounce(projectName, 200);
+  //组件加载完毕请求获取数据Users数据
+  useComponentDidMount(getUsers);
 
   //每次下拉框值改变或者输入框值变化，都更新projects
   useEffect(() => {
     setProjects({
       personId,
-      name: projectName,
+      name: deboundProjectName,
     });
-  }, [personId, projectName]);
+  }, [personId, deboundProjectName, setProjects]);
 
   // 事件响应函数分开写，e的类型是React.FormEvent<HTMLInputElement>
   const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {

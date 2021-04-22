@@ -1,9 +1,10 @@
 import React, { memo } from "react";
-import { IProject } from "../../types/index";
+import { IProject, IUser } from "../../types/index";
 import { connect } from "react-redux";
 
 type IProps = {
   projects: IProject[];
+  users: IUser[];
 };
 
 const ProjectList = memo(function index(props: IProps) {
@@ -20,7 +21,9 @@ const ProjectList = memo(function index(props: IProps) {
           return (
             <tr key={item.id}>
               <td>{item.name}</td>
-              <td>{item.personId}</td>
+              <td>
+                {props.users.filter((i) => i.id === item.personId)[0].name}
+              </td>
             </tr>
           );
         })}
@@ -31,6 +34,7 @@ const ProjectList = memo(function index(props: IProps) {
 
 const mapStateToProps = (state: any) => ({
   projects: state.projectInfo.projects,
+  users: state.projectInfo.users,
 });
 
 export default connect(mapStateToProps)(ProjectList);
